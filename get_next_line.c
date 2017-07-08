@@ -6,7 +6,7 @@
 /*   By: wlin <wlin@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 10:43:20 by wlin              #+#    #+#             */
-/*   Updated: 2017/07/07 19:21:47 by wlin             ###   ########.fr       */
+/*   Updated: 2017/07/08 16:41:50 by wlin             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,30 @@ int ft_check_nl(char **line, char **save)
 
 	if((pos = ft_strchr(*line, '\n')))
 	{
-		if (*(*save))
+		if (*(*save) != 0)
+		{
 			free(*save);
-		*save = ft_strdup(pos + 1);
+			*save = NULL;
+		}
+		if (*(pos +1) != '\0')
+			*save = ft_strdup(pos + 1);
 		*pos = '\0';
-		if (*(*save) == "")
-			free(*save);
 		return (1);
 	}
 	return (0);
 }
 
-
 int	get_next_line(const int fd, char **line)
 {
-	static char		*save = "";
+	static char		*save = NULL;
 	char			*sptr;
 	char			buffer[BUFF_SIZE + 1];
 	int				ret;
 
 	if (fd < 0 || !line || (read(fd, buffer, 0) < 0) || BUFF_SIZE < 1)
 		return (-1);
+	if (!save)
+		save = "";
 	*line = ft_strdup(save);
 	if (ft_check_nl(line, &save))
 		return (1);
@@ -52,9 +55,8 @@ int	get_next_line(const int fd, char **line)
 		if (ft_check_nl(line, &save))
 			return (1);
 	}
-	if (ret == 0 && ft_strlen(*line))
-		return (1);
-
+	if (ret == 0 &&)
+	return (ret == -1 ? -1 : 0);
 }
 
 // int main(int argc, char **argv)
@@ -71,5 +73,6 @@ int	get_next_line(const int fd, char **line)
 // 		printf("%d %s\n", retval, line);
 // 		free(line);
 // 	}
+// 	free(line);
 // 	return (0);
 // }
